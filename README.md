@@ -1,12 +1,15 @@
----
+# Notion Weekify WebApp
 
-# Svelte + TypeScript + Jest
+This is a web app project to manage easily some functions in my notion workspace for university.
+The first functionality this app will provide is to make an schedule based on th data stored in a notion database
 
-This is a project template for [Svelte](https://svelte.dev) apps. It's based on the official one from https://github.com/sveltejs/template.
+The project uses svelte, typescript and jest for testing
 
-This one has been pre-setup with TypeScript and Jest testing support.
+I will also use this repo as svelte and css testing and cool stuf
 
-To create a new project based on this template using [degit](https://github.com/Rich-Harris/degit):
+This project is built from a template for [Svelte](https://svelte.dev) apps. It's based on the official one from <https://github.com/sveltejs/template>.
+
+To create a new project based on this template using [degit](https://github.com/Rich-Harris/degit) run the following commands:
 
 ```bash
 npx degit dceddia/svelte-typescript-jest svelte-app
