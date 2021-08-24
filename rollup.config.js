@@ -5,6 +5,10 @@ import livereload from 'rollup-plugin-livereload';
 import { terser } from 'rollup-plugin-terser';
 import sveltePreprocess from 'svelte-preprocess';
 import typescript from '@rollup/plugin-typescript';
+import replace from '@rollup/plugin-replace';
+import dotenv from 'dotenv';
+
+dotenv.config()
 
 const production = !process.env.ROLLUP_WATCH;
 
@@ -29,6 +33,7 @@ function serve() {
 	};
 }
 
+
 export default {
 	input: 'src/main.ts',
 	output: {
@@ -38,6 +43,10 @@ export default {
 		file: 'public/build/bundle.js'
 	},
 	plugins: [
+		replace({
+			preventAssignment: true,
+			"process.env.TOKEN_V2": JSON.stringify(process.env.TOKEN_V2),
+		}),
 		svelte({
 			// enable run-time checks when not in production
 			dev: !production,
