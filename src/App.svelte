@@ -11,6 +11,7 @@
   } from "carbon-components-svelte";
   import Home from "./pages/Home.svelte";
   import Settings from "./pages/Settings.svelte";
+  import Welcomer from "./components/Welcomer.svelte"
 </script>
 
 <svelte:head>
@@ -26,7 +27,7 @@
   <Grid>
     <Row>
       <Column>
-        <h1>Crea un horario en Notion de forma rápida y sencilla</h1>
+        <Welcomer/>
       </Column>
     </Row>
 	<Row>
@@ -37,7 +38,7 @@
 	  </Row>
     <Row>
       <Column>
-        <Tabs type="container">
+        <Tabs>
           <Tab label="Crear el horario" />
           <Tab label="Configuración" />
           <div slot="content">
