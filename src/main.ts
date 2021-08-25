@@ -1,6 +1,5 @@
-import App from './pages/App.svelte';
+import App from './App.svelte';
 
-//require("dotenv").config();
 
 const app = new App({
 	target: document.body,
