@@ -46,7 +46,7 @@ export default {
 	plugins: [
 		replace({
 			preventAssignment: true,
-			"process.env.TOKEN_V2": JSON.stringify(process.env.TOKEN_V2),
+			"process.env.INTERNAL_INTEGRATION_TOKEN": JSON.stringify(process.env.INTERNAL_INTEGRATION_TOKEN),
 		}),
 		svelte({
 			// enable run-time checks when not in production

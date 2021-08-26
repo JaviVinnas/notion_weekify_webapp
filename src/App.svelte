@@ -39,7 +39,7 @@
     <Row>
       <Column>
         <Tabs>
-          <Tab label="Crear el horario" />
+          <Tab label="Crear horario" />
           <Tab label="Configuración" />
           <div slot="content">
 			<br />
