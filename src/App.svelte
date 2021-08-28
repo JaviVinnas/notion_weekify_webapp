@@ -9,9 +9,8 @@
     Tab,
     TabContent,
   } from "carbon-components-svelte";
-  import Home from "./pages/Home.svelte";
-  import Settings from "./pages/Settings.svelte";
-  import Welcomer from "./components/Welcomer.svelte"
+  import { Settings, CreateSchedule } from "./pages";
+  import { Welcomer } from "./components";
 </script>
 
 <svelte:head>
@@ -24,26 +23,26 @@
 <Header company="Javi Viña's" platformName="Notion Weekify" />
 
 <Content>
-  <Grid>
+  <Grid fullWidth>
     <Row>
       <Column>
-        <Welcomer/>
+        <Welcomer />
       </Column>
     </Row>
-	<Row>
-		<Column>
-		  <br />
-		  <br />
-		</Column>
-	  </Row>
+    <Row>
+      <Column>
+        <br />
+        <br />
+      </Column>
+    </Row>
     <Row>
       <Column>
         <Tabs>
           <Tab label="Crear horario" />
           <Tab label="Configuración" />
           <div slot="content">
-			<br />
-            <TabContent><Home /></TabContent>
+            <br />
+            <TabContent><CreateSchedule /></TabContent>
             <TabContent><Settings /></TabContent>
           </div>
         </Tabs>
