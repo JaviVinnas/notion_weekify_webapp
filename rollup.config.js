@@ -6,6 +6,7 @@ import { terser } from 'rollup-plugin-terser';
 import sveltePreprocess from 'svelte-preprocess';
 import typescript from '@rollup/plugin-typescript';
 import replace from '@rollup/plugin-replace';
+import json from "@rollup/plugin-json";
 import dotenv from 'dotenv';
 
 dotenv.config()
@@ -48,6 +49,10 @@ export default {
 		replace({
 			preventAssignment: true,
 			"process.env.INTERNAL_INTEGRATION_TOKEN": JSON.stringify(process.env.INTERNAL_INTEGRATION_TOKEN),
+			"process.env.ASIGNATURAS_DB_ID": JSON.stringify(process.env.ASIGNATURAS_DB_ID),
+			"process.env.PROFESORES_DB_ID": JSON.stringify(process.env.PROFESORES_DB_ID),
+			"process.env.HORARIOS_DB_ID": JSON.stringify(process.env.HORARIOS_DB_ID),
+			"process.env.COSASCONFECHA_DB_ID": JSON.stringify(process.env.COSASCONFECHA_DB_ID),
 		}),
 		svelte({
 			// enable run-time checks when not in production
@@ -74,6 +79,7 @@ export default {
 			sourceMap: !production,
 			inlineSources: !production
 		}),
+		json(),
 
 		// In dev mode, call `npm run start` once
 		// the bundle has been generated

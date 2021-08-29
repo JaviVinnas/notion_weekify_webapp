@@ -5,5 +5,9 @@ declare namespace NodeJS {
    */
     export interface ProcessEnv {
       INTERNAL_INTEGRATION_TOKEN: string;
+      ASIGNATURAS_DB_ID: string;
+      PROFESORES_DB_ID: string;
+      HORARIOS_DB_ID: string;
+      COSASCONFECHA_DB_ID: string;
     }
   }

@@ -11,15 +11,33 @@
     Button,
   } from "carbon-components-svelte";
   import { cursos, cuatrimestres, diasLaborables } from "../core";
+  import useApi from "../api"
+
+
+
+  let selectedCursoIndex = 3;
+  let selectedCuatriIndex = 0;
+  let selectedDate = ""; 
+
+  let curso = cursos[selectedCursoIndex];
+  let cuatri = cuatrimestres[selectedCuatriIndex];
+  let fecha: Date | undefined = undefined;
+
+  $: curso = cursos[selectedCursoIndex];
+  $: cuatri = cuatrimestres[selectedCuatriIndex];
+  $: fecha = new Date(selectedDate);
+
+  const api = useApi();
+
 </script>
 
-<Grid fullWidth padding>
+<Grid padding>
   <Row>
-    <Column>
+    <Column lg={16}>
       <h4>Elige el curso</h4>
     </Column>
-    <Column>
-      <ContentSwitcher selectedIndex={1}>
+    <Column lg={16}>
+      <ContentSwitcher bind:selectedIndex={selectedCursoIndex}>
         {#each cursos as curso}
           <Switch text={curso} />
         {/each}
@@ -27,11 +45,11 @@
     </Column>
   </Row>
   <Row>
-    <Column>
+    <Column lg={16}>
       <h4>Elige el cuatrimestre</h4>
     </Column>
-    <Column>
-      <ContentSwitcher selectedIndex={1}>
+    <Column lg={16}>
+      <ContentSwitcher bind:selectedIndex={selectedCuatriIndex}>
         {#each cuatrimestres as cuatri}
           {#if cuatri !== "Anual"}
             <Switch text={cuatri} />
@@ -41,11 +59,11 @@
     </Column>
   </Row>
   <Row>
-    <Column>
-      <h4>Selecciona el <b>lunes</b> de la semana a crear</h4>
+    <Column lg={16}>
+      <h4>Selecciona un día de la semana a crear el horario</h4>
     </Column>
-    <Column>
-      <DatePicker datePickerType="single" on:change>
+    <Column lg={16}>
+      <DatePicker datePickerType="single" on:change bind:value={selectedDate}>
         <DatePickerInput
           size="xl"
           placeholder="mm/dd/yyyy"
@@ -55,16 +73,31 @@
     </Column>
   </Row>
   <Row>
-    <Column sm={{ span: 1, offset: 1 }}>
+    <Column>
       <ButtonSet>
-        <Button kind="secondary">Cancelar</Button>
-        <Button>Generar clases</Button>
+        <Button kind="secondary">Resetear</Button>
+        <Button
+          on:click={(_event) => {
+            
+            
+            
+            console.log(
+              "Fecha: ",
+              selectedDate,
+              fecha,
+              "Cuatri: ",
+              cuatri,
+              "Curso: ",
+              curso
+            );
+          }}>Generar clases</Button
+        >
       </ButtonSet>
     </Column>
   </Row>
 </Grid>
-<br>
-<br>
+<br />
+<br />
 <Grid>
   <Row>
     {#each diasLaborables as diaLaborable}

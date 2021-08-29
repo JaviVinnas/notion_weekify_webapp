@@ -15,3 +15,9 @@ To create a new project based on this template using [degit](https://github.com/
 npx degit dceddia/svelte-typescript-jest svelte-app
 cd svelte-app
 ```
+
+The notion api is currently in beta and web browser api-requests are not supported yet. The chrome instance to run this web app must be open with this command (windows)
+
+```bash
+./chrome.exe --disable-web-security --user-data-dir=c:\my-chrome-data\data
+```
