@@ -1,13 +1,8 @@
-import { TitleInputPropertyValue } from "@notionhq/client/build/src/api-types";
-import { Curso, Cuatrimestre } from "../core";
 import BaseApi from "./BaseApi";
-import { NotionDBHorariosRow, notionDBHorariosColumnNames } from "./types";
+import { horariosDefinition, DBQueryResponse, RowMapper } from "./types";
 
 export interface HorariosApi {
-  getHorario(
-    curso: Curso,
-    cuatrimestre: Exclude<Cuatrimestre, "Anual">
-  ): Promise<NotionDBHorariosRow[]>;
+  getHorario(): Promise<DBQueryResponse<typeof horariosDefinition>>;
 }
 
 class HorariosApiImpl extends BaseApi implements HorariosApi {
@@ -15,31 +10,31 @@ class HorariosApiImpl extends BaseApi implements HorariosApi {
     super();
   }
 
-  public async getHorario(
-    curso: Curso,
-    cuatri: Exclude<Cuatrimestre, "Anual">
-  ): Promise<NotionDBHorariosRow[]> {
-    const response = await this.client.databases.query({
+  public async getHorario(): Promise<
+    DBQueryResponse<typeof horariosDefinition>
+  > {
+    const rawResponse = await this.client.databases.query({
       database_id: process.env.HORARIOS_DB_ID,
     });
-
-    const result: NotionDBHorariosRow[] = [];
-
-    response.results.forEach((row) => {
-      //cada fila de la tabla
-      const rowResult = {};
-
-      notionDBHorariosColumnNames.forEach((column) => {
-        const [columnName, typeDiscriminator] = column;
-        const rowProperty = row.properties[columnName];
-        if (rowProperty && rowProperty.type === typeDiscriminator) {
-          rowResult[columnName] = rowProperty;
-        }
-      });
-      result.push(rowResult as NotionDBHorariosRow);
+    console.log(rawResponse);
+    //transform the results array
+    const results: RowMapper<typeof horariosDefinition>[] = [];
+    rawResponse.results.forEach((rawResult) => {
+      //if the colums are the expected we ad the value
+      if (
+        Object.keys(rawResult.properties).sort().join(",") ===
+        Object.keys(horariosDefinition).sort().join(",")
+      ) {
+        results.push(rawResult.properties as any);
+      } else {
+        throw new Error(
+          "The columns found in the horarios table (1) are not the expected (2) ->" +
+            rawResult.properties +
+            horariosDefinition
+        );
+      }
     });
-
-    return result;
+    return { ...rawResponse, results };
   }
 }
 

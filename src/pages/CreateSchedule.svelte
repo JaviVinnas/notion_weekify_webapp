@@ -11,13 +11,26 @@
     Button,
   } from "carbon-components-svelte";
   import { cursos, cuatrimestres, diasLaborables } from "../core";
-  import useApi from "../api"
 
+  import useApi from "../api";
 
+  useApi()
+    .horarios.getHorario()
+    .then((horario) =>
+      horario.results.forEach((row) =>
+        row.Nombre.title.forEach((title) => console.log(title.plain_text))
+      )
+    );
 
   let selectedCursoIndex = 3;
   let selectedCuatriIndex = 0;
-  let selectedDate = ""; 
+  let selectedDate = "";
+
+  function reset() {
+    selectedCursoIndex = 3;
+    selectedCuatriIndex = 0;
+    selectedDate = "";
+  }
 
   let curso = cursos[selectedCursoIndex];
   let cuatri = cuatrimestres[selectedCuatriIndex];
@@ -26,9 +39,6 @@
   $: curso = cursos[selectedCursoIndex];
   $: cuatri = cuatrimestres[selectedCuatriIndex];
   $: fecha = new Date(selectedDate);
-
-  const api = useApi();
-
 </script>
 
 <Grid padding>
@@ -63,7 +73,7 @@
       <h4>Selecciona un día de la semana a crear el horario</h4>
     </Column>
     <Column lg={16}>
-      <DatePicker datePickerType="single" on:change bind:value={selectedDate}>
+      <DatePicker datePickerType="single" on:click bind:value={selectedDate}>
         <DatePickerInput
           size="xl"
           placeholder="mm/dd/yyyy"
@@ -75,21 +85,11 @@
   <Row>
     <Column>
       <ButtonSet>
-        <Button kind="secondary">Resetear</Button>
+        <Button on:click={reset} kind="secondary">Resetear</Button>
         <Button
+          disabled={!selectedDate}
           on:click={(_event) => {
-            
-            
-            
-            console.log(
-              "Fecha: ",
-              selectedDate,
-              fecha,
-              "Cuatri: ",
-              cuatri,
-              "Curso: ",
-              curso
-            );
+            console.log("Fecha: ", fecha, "Cuatri: ", cuatri, "Curso: ", curso);
           }}>Generar clases</Button
         >
       </ButtonSet>
