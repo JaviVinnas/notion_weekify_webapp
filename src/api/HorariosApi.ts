@@ -1,3 +1,4 @@
+import { DatabasesQueryParameters } from "@notionhq/client/build/src/api-endpoints";
 import BaseApi from "./BaseApi";
 import { horariosDefinition, DBQueryResponse, RowMapper } from "./types";
 

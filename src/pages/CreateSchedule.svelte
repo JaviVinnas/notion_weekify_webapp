@@ -22,6 +22,22 @@
       )
     );
 
+  useApi()
+    .asignaturas.getAsignaturas()
+    .then((asignaturas) =>
+      asignaturas.results.forEach((asignatura) =>
+        console.log(asignatura.Ámbito.select.name)
+      )
+    );
+
+  useApi()
+    .profesores.getProfesores()
+    .then((profesores) =>
+      profesores.results.forEach((profesor) =>
+        profesor.Nombre.title.forEach((title) => console.log(title.plain_text))
+      )
+    );
+
   let selectedCursoIndex = 3;
   let selectedCuatriIndex = 0;
   let selectedDate = "";

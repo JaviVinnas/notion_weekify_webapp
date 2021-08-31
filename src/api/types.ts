@@ -2,12 +2,17 @@ import { DatabasesQueryResponse } from "@notionhq/client/build/src/api-endpoints
 import {
   CheckboxPropertyValue,
   DatePropertyValue,
+  EmailPropertyValue,
+  FilesPropertyValue,
+  NumberPropertyValue,
   PropertyBase,
   PropertyValueBase,
   RelationProperty,
   RichTextInputPropertyValue,
   RollupProperty,
+  SelectPropertyValue,
   TitleInputPropertyValue,
+  URLPropertyValue,
 } from "@notionhq/client/build/src/api-types";
 
 const databaseMediaTypes = [
@@ -22,7 +27,11 @@ const databaseMediaTypes = [
   "video",
   "audio",
   "block",
-  "url"
+  "url",
+  "select",
+  "number",
+  "files",
+  "email",
 ] as const;
 
 export type RowMapper<
@@ -40,9 +49,22 @@ export type RowMapper<
     ? RelationProperty
     : T[K] extends "rollup"
     ? RollupProperty
+    : T[K] extends "url"
+    ? URLPropertyValue
+    : T[K] extends "select"
+    ? SelectPropertyValue
+    : T[K] extends "number"
+    ? NumberPropertyValue
+    : T[K] extends "files"
+    ? FilesPropertyValue
+    : T[K] extends "email"
+    ? EmailPropertyValue
     : never;
-  };
+};
 
+export type DBQueryResponse<
+  T extends Record<string, typeof databaseMediaTypes[number]>
+> = Omit<DatabasesQueryResponse, "results"> & { results: RowMapper<T>[] };
 
 export const horariosDefinition = {
   Nombre: "title",
@@ -55,32 +77,41 @@ export const horariosDefinition = {
   Curso: "rollup",
 } as const;
 
-export type DBQueryResponse<T extends Record<string, typeof databaseMediaTypes[number]>> = Omit<DatabasesQueryResponse, "results"> & {results: RowMapper<T>[]}
+export const asignaturasDefinition = {
+  Nombre: "title",
+  "Nombre completo": "rich_text",
+  "Link Aula Virtual": "url",
+  "Grupo de prácticas": "rich_text",
+  Cuatri: "select",
+  Curso: "select",
+  Obligatoriedad: "select",
+  Créditos: "number",
+  Ámbito: "select",
+  Nota: "number",
+  "Profe teóricas": "relation",
+  "Profe prácticas": "relation",
+  "Número teóricas": "number",
+  "Número prácticas": "number",
+  "Acabadas teóricas": "checkbox",
+  "Acabadas prácticas": "checkbox",
+  "Profes involucrados": "rollup",
+  Temas: "relation",
+  "Cosas con fecha asociada": "relation",
+  Libros: "relation",
+  Gradox: "files",
+  Proyectos: "relation",
+  Horario: "relation",
+  "Link ETSE": "url",
+} as const;
 
-
-
-export type AsignaturasDefinition = 
-  | "Nombre"
-  | "Nombre completo"
-  | "Link Aula Virtual"
-  | "Grupo de prácticas"
-  | "Cuatri"
-  | "Curso"
-  | "Obligatoriedad"
-  | "Créditos"
-  | "Ámbito"
-  | "Nota"
-  | "Profe teóricas"
-  | "Profe prácticas"
-  | "Número teóricas"
-  | "Número prácticas"
-  | "Acabadas teóricas"
-  | "Acabadas prácticas"
-  | "Profes involucrados"
-  | "Temas"
-  | "Cosas con fecha asociada"
-  | "Libros"
-  | "Gradox"
-  | "Proyectos"
-  | "Horario"
-  | "Link ETSE";
+export const profesoresDefinition = {
+  Nombre: "title",
+  Correo: "email",
+  Link: "url",
+  Dirección: "rich_text",
+  "Info tutorías": "rich_text",
+  Nota: "number",
+  "Clases / charlas / exámenes / trabajos": "relation",
+  "Related to Asignaturas (Profe prácticas)": "relation",
+  "Related to Asignaturas (Profe teóricas)": "relation",
+} as const;

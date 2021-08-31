@@ -1,8 +1,12 @@
 import {useHorariosApi} from "./HorariosApi"
+import {useAsignaturasApi} from "./AsignaturasApi"
+import { useProfesoresApi } from "./ProfesoresApi"
 
 export default function useApi() {
   return {
-      horarios: useHorariosApi()
+    horarios: useHorariosApi(),
+    asignaturas: useAsignaturasApi(),
+    profesores: useProfesoresApi()
   }
 }
 
