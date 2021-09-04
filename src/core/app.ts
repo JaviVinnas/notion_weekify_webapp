@@ -1,18 +1,32 @@
-import { Horario } from ".";
-import { Clase, Cuatrimestre, Curso } from "./types";
-import useApi, { asignaturasDefinition, RowMapper } from "../api";
+import { dateMixer, Horario, hourPicker } from ".";
+import { Clase, Cuatrimestre, Curso, Hora } from "./types";
+import useApi, { asignaturasDefinition, profesoresDefinition, RowMapper } from "../api";
 
 async function getAsignaturaById(
   id: string
 ): Promise<RowMapper<typeof asignaturasDefinition>> {
   const api = useApi();
-  const asignaturas = api.asignaturas.getAsignaturas();
-  return (await asignaturas).results.find((asignatura) => asignatura.id === id);
+    const asignaturas = await api.asignaturas.getAsignaturas();
+    const selectedAsignatura = asignaturas.results.find((asignatura) => asignatura.id === id);
+    if (!selectedAsignatura) throw new Error(`Asignatura con ID ${id} not found`);
+    return selectedAsignatura;
 }
+
+async function getProfeById(
+    id: string
+): Promise<RowMapper<typeof profesoresDefinition>> {
+    const api = useApi();
+    const profes = await api.profesores.getProfesores();
+    const selectedProfe = profes.results.find((profe) => profe.id === id);
+    if (!selectedProfe) throw new Error(`Profesor con ID ${id} not found`);
+    return selectedProfe;
+}
+
 
 export async function getHorarios(
   curso: Curso,
-  cuatrimestre: Cuatrimestre
+cuatrimestre: Cuatrimestre,
+  weekDay?: Date, 
 ): Promise<void> {
   const api = useApi();
   const horarioRaw = await api.horarios.getHorario();
@@ -40,4 +54,43 @@ export async function getHorarios(
       );
     });
   //transform the rows into class objects
+    const clases: Clase[] = await Promise.all( filteredClasesHorario.map(async (claseHorario) => {
+        const start = weekDay ? dateMixer(weekDay, new Date(claseHorario.properties.Duración.date.start)) : hourPicker(new Date(claseHorario.properties.Duración.date.start));
+        const end = weekDay ? dateMixer(weekDay, new Date(claseHorario.properties.Duración.date.end)) : hourPicker(new Date(claseHorario.properties.Duración.date.end));
+        const duracionMessage = start instanceof Date ? "fecha completa" : "hora" as const;
+        const esPractica = claseHorario.properties.Práctica.checkbox;
+        const esPresencial = claseHorario.properties.Presencial.checkbox;
+        const ubicacion = claseHorario.properties.Ubicación.rich_text[0].plain_text ?? "(Sin ubicación)";
+        const asignatura = await getAsignaturaById(claseHorario.properties.Asignatura.relation[0].id);
+        const nombreCorto = asignatura.properties.Nombre.title[0].plain_text ?? "(Sin nombre)";
+        const profesTeoricas = await Promise.all(asignatura.properties["Profe teóricas"].relation.map(async (profeId) => {
+            const profePage = await getProfeById(profeId.id);
+            const nombre = profePage.properties.Nombre.title[0].plain_text ?? "(Sin nombre)";
+            return { nombre }
+        }));
+        const profePracticas = await Promise.all(asignatura.properties["Profe prácticas"].relation.map(async (profeId) => {
+            const profePage = await getProfeById(profeId.id);
+            const nombre = profePage.properties.Nombre.title[0].plain_text ?? "(Sin nombre)";
+            return { nombre }
+        }));
+        const activasTeoricas = asignatura.properties["Activas teóricas"].checkbox;
+        const activasPracticas = asignatura.properties["Activas prácticas"].checkbox;
+        const numeroTeoricas = asignatura.properties["Número teóricas"].number;
+        const numeroPrácticas = asignatura.properties["Número prácticas"].number;
+        const clase: Clase = {
+            duracion: { type: duracionMessage, start, end } as unknown as { type: "fecha completa", start: Date; end: Date } | { type: "hora"; start: Hora; end: Hora },
+            esPractica,
+            esPresencial,
+            ubicacion,
+            asignatura: {
+                nombreCorto,
+                practicas: { profes: profePracticas, activas: activasPracticas, numero: numeroPrácticas },
+                teoricas: { profes: profesTeoricas, activas: activasTeoricas, numero: numeroTeoricas },
+            }
+        }
+        return clase;
+
+      
+    }));
+    //clasificar por días
 }

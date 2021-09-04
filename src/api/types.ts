@@ -45,7 +45,7 @@ export type RowPropertiesMapper<
     : T[K] extends "rich_text"
     ? RichTextInputPropertyValue
     : T[K] extends "relation"
-    ? RelationProperty
+    ? { id: string, type: "relation", relation: ({ id: string })[]}
     : T[K] extends "rollup"
     ? RollupPropertyValue
     : T[K] extends "url"
@@ -97,8 +97,8 @@ export const asignaturasDefinition = {
   "Profe prácticas": "relation",
   "Número teóricas": "number",
   "Número prácticas": "number",
-  "Acabadas teóricas": "checkbox",
-  "Acabadas prácticas": "checkbox",
+  "Activas teóricas": "checkbox",
+  "Activas prácticas": "checkbox",
   "Profes involucrados": "rollup",
   Temas: "relation",
   "Cosas con fecha asociada": "relation",

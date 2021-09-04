@@ -25,17 +25,22 @@ export interface Profesor {
 
 export interface Asignatura {
   nombreCorto: string;
-  teoricas: { profe: Profesor; activas: boolean; numero: number };
-  practicas: { profe: Profesor; activas: boolean; numero: number };
+  teoricas: { profes: Profesor[]; activas: boolean; numero: number };
+  practicas: { profes: Profesor[]; activas: boolean; numero: number };
+}
+
+export interface Hora{
+  hora: number;
+  minutos: number;
 }
 
 /**
  * Tipo de dato que identifica una clase del horario
  */
 export interface Clase {
-  duracion: { start: Date; end: Date };
-  practica: boolean;
-  presencial: boolean;
+  duracion: { type: "fecha completa", start: Date; end: Date } | { type: "hora"; start: Hora; end: Hora };
+  esPractica: boolean;
+  esPresencial: boolean;
   ubicacion: string;
   asignatura: Asignatura;
 }

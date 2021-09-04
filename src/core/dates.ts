@@ -1,5 +1,5 @@
 
-import { diasDeLaSemana } from "./types";
+import { diasDeLaSemana, Hora } from "./types";
 
 /**
  * Generate a list of the weeks of the year with the first day of the week and the last
@@ -29,5 +29,16 @@ export function weekGenerator(): { monday: Date; sunday: Date; current: boolean 
   }
 
   return weekList;
+}
+
+export function dateMixer(day: Date, hour: Date): Date {
+  const date = new Date(day);
+  date.setHours(hour.getHours());
+  date.setMinutes(hour.getMinutes());
+  return date;
+}
+
+export function hourPicker(hour: Date): Hora {
+  return {hora: hour.getHours(), minutos: hour.getMinutes()};
 }
 
