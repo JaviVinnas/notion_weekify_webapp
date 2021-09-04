@@ -2,7 +2,7 @@ import BaseApi from "./BaseApi";
 import {
   DBQueryResponse,
   profesoresDefinition,
-  RowMapper,
+  RowPropertiesMapper,
 } from "./types";
 
 export interface ProfesoresApi {
@@ -20,23 +20,17 @@ class ProfesoresApiImpl extends BaseApi implements ProfesoresApi {
     });
     console.log(rawResponse);
     //transform the results array
-    const results: RowMapper<typeof profesoresDefinition>[] = [];
-    rawResponse.results.forEach((rawResult) => {
-      //if the colums are the expected we ad the value
-      if (
-        Object.keys(rawResult.properties).sort().join(",") ===
-        Object.keys(profesoresDefinition).sort().join(",")
-      ) {
-        results.push(rawResult.properties as any);
-      } else {
-        throw new Error(
-          "The columns found in the profesores table (1) are not the expected (2) ->" +
-            rawResult.properties +
-            profesoresDefinition
-        );
-      }
-    });
-    return { ...rawResponse, results };
+    //chech if value names are incorrect
+    if (
+      rawResponse.results.some(
+        (pageResult) =>
+          Object.keys(pageResult.properties).sort().join(",") !==
+          Object.keys(profesoresDefinition).sort().join(",")
+      )
+    ) {
+      throw new Error("Invalid profesores value column names");
+    }
+    return rawResponse as unknown as DBQueryResponse<typeof profesoresDefinition>
   }
 }
 

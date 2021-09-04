@@ -18,7 +18,7 @@
     .horarios.getHorario()
     .then((horario) =>
       horario.results.forEach((row) =>
-        row.Nombre.title.forEach((title) => console.log(title.plain_text))
+        console.log("Rollup de cuatri ->", row.properties.Cuatri.rollup)
       )
     );
 
@@ -26,7 +26,7 @@
     .asignaturas.getAsignaturas()
     .then((asignaturas) =>
       asignaturas.results.forEach((asignatura) =>
-        console.log(asignatura.Ámbito.select.name)
+        console.log(asignatura.properties["Nombre completo"])
       )
     );
 
@@ -34,7 +34,7 @@
     .profesores.getProfesores()
     .then((profesores) =>
       profesores.results.forEach((profesor) =>
-        profesor.Nombre.title.forEach((title) => console.log(title.plain_text))
+        profesor.properties.Nombre.title.forEach((title) => console.log(title.plain_text))
       )
     );
 

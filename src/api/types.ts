@@ -5,11 +5,10 @@ import {
   EmailPropertyValue,
   FilesPropertyValue,
   NumberPropertyValue,
-  PropertyBase,
-  PropertyValueBase,
+  Page,
   RelationProperty,
   RichTextInputPropertyValue,
-  RollupProperty,
+  RollupPropertyValue,
   SelectPropertyValue,
   TitleInputPropertyValue,
   URLPropertyValue,
@@ -34,7 +33,7 @@ const databaseMediaTypes = [
   "email",
 ] as const;
 
-export type RowMapper<
+export type RowPropertiesMapper<
   T extends Record<string, typeof databaseMediaTypes[number]>
 > = {
   [K in keyof T]: T[K] extends "title"
@@ -48,7 +47,7 @@ export type RowMapper<
     : T[K] extends "relation"
     ? RelationProperty
     : T[K] extends "rollup"
-    ? RollupProperty
+    ? RollupPropertyValue
     : T[K] extends "url"
     ? URLPropertyValue
     : T[K] extends "select"
@@ -62,9 +61,15 @@ export type RowMapper<
     : never;
 };
 
+export type RowMapper<
+  T extends Record<string, typeof databaseMediaTypes[number]>
+> = Omit<Page, "properties"> & { properties: RowPropertiesMapper<T> };
+
 export type DBQueryResponse<
   T extends Record<string, typeof databaseMediaTypes[number]>
-> = Omit<DatabasesQueryResponse, "results"> & { results: RowMapper<T>[] };
+> = Omit<DatabasesQueryResponse, "results"> & {
+  results: RowMapper<T>[];
+};
 
 export const horariosDefinition = {
   Nombre: "title",
@@ -112,6 +117,6 @@ export const profesoresDefinition = {
   "Info tutorías": "rich_text",
   Nota: "number",
   "Clases / charlas / exámenes / trabajos": "relation",
-  "Related to Asignaturas (Profe prácticas)": "relation",
-  "Related to Asignaturas (Profe teóricas)": "relation",
+  "Donde da prácticas": "relation",
+  "Donde da teóricas": "relation",
 } as const;
