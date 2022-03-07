@@ -21,3 +21,5 @@ The notion api is currently in beta and web browser api-requests are not support
 ```bash
 C:\Program Files (x86)\Google\Chrome\Application\chrome.exe --disable-web-security --user-data-dir=c:\my-chrome-data\data
 ```
+
+(This project isn't ready yet because of limitations with the Notion API but I hope I can finish it in the future)
